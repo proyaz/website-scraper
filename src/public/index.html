@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Website Scraper</title>
+</head>
+<body>
+  <h1>Website Scraper</h1>
+  <form id="scrapeForm">
+    <label for="websiteUrl">Website URL:</label>
+    <input type="text" id="websiteUrl" required>
+    <button type="submit">Scrape</button>
+  </form>
+  <p id="message"></p>
+
+  <script>
+    const form = document.getElementById('scrapeForm');
+    const message = document.getElementById('message');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const websiteUrl = document.getElementById('websiteUrl').value;
+
+      message.textContent = 'Scraping in progress...';
+
+      try {
+        const response = await fetch('/scrape', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url: websiteUrl, websiteName: new URL(websiteUrl).hostname }),
+        });
+
+        const data = await response.json();
+        message.textContent = data.message;
+      } catch (err) {
+        message.textContent = 'Error occurred during scraping.';
+      }
+    });
+  </script>
+</body>
+</html>
